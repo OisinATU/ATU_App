@@ -20,6 +20,9 @@ public class RequestController {
             @RequestParam double secondNumber,
             @RequestParam String operator) {
         if (operator.equals("+")) return calculator.add(firstNumber, secondNumber);
+        if (operator.equals("-")) return calculator.subtract(firstNumber, secondNumber);
+        if (operator.equals("*")) return calculator.multiply(firstNumber, secondNumber);
+        if (operator.equals("/")) return calculator.divide(firstNumber, secondNumber);
     throw new IllegalArgumentException("Invalid operator");
     }
 
