@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>ATU App • Study Dashboard</title>
+    <style>
+        :root{
+            --atu-teal:#005b5e;
+            --atu-teal-2:#0c7c80;
+            --text:#102027;
+            --muted:#6b7280;
+            --bg:#f6f8f9;
+            --card:#ffffff;
+            --line:#e3e7ea;
+            --shadow: 0 12px 26px rgba(0,0,0,.08);
+        }
+        *{box-sizing:border-box}
+        body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg);min-height:100vh;}
+
+        .topbar{
+            background: var(--atu-teal);
+            color:#fff;
+            height: 86px;
+            display:flex;
+            align-items:center;
+            padding: 0 18px;
+            gap: 18px;
+            position: sticky;
+            top:0;
+            z-index:10;
+            box-shadow: 0 8px 18px rgba(0,0,0,.18);
+        }
+        .brand{display:flex;align-items:center;gap:12px;min-width:230px;}
+        .brand-badge{width:56px;height:44px;border-radius:10px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.5px;}
+        .brand-text small{display:block;opacity:.85;font-size:12px;line-height:1.1;}
+        .brand-text strong{display:block;font-size:14px;line-height:1.2;margin-top:2px;}
+        .nav{display:flex;gap:18px;align-items:center;font-weight:800;flex:1;}
+        .nav a{color:#fff;text-decoration:none;opacity:.92;padding:10px 10px;border-radius:999px;}
+        .nav a:hover{opacity:1;background:rgba(255,255,255,.10);}
+        .nav a.active{background:rgba(255,255,255,.14);}
+        .user-chip{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.12);font-weight:800;white-space:nowrap;}
+        .avatar{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-weight:900;}
+
+        .wrap{max-width: 980px; margin:0 auto; padding: 22px 18px 54px;}
+        .grid{display:grid; grid-template-columns: 1fr; gap: 16px;}
+        .card{
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+        h1{margin:0 0 4px;}
+        .muted{color:var(--muted); font-size: 13px; line-height: 1.35;}
+        .row{display:flex; align-items:center; justify-content:space-between; gap: 12px; flex-wrap:wrap;}
+
+        .bar{
+            width:100%;
+            height: 14px;
+            background:#e9eef0;
+            border-radius: 999px;
+            overflow:hidden;
+            margin-top: 10px;
+        }
+        .fill{
+            height:100%;
+            width:0%;
+            background: var(--atu-teal-2);
+            transition: width .25s ease;
+        }
+        .subject{
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            margin-top: 12px;
+        }
+
+        table{width:100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;}
+        th,td{padding: 10px 8px; border-bottom: 1px solid var(--line); text-align:left;}
+        th{color: var(--muted); font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing:.08em;}
+        .pill{
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(12,124,128,.10);
+            color: var(--atu-teal-2);
+            font-weight: 900;
+        }
+        .dangerPill{
+            background: rgba(225,75,75,.10);
+            color: #c23a3a;
+        }
+    </style>
+</head>
+
+<body>
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-badge">ATU</div>
+        <div class="brand-text">
+            <small>Atlantic Technological University</small>
+            <strong>ATU App</strong>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <a href="study-timer.html">Study Timer</a>
+        <a class="active" href="study-dashboard.html">Study Dashboard</a>
+        <a href="#">Canteen</a>
+        <a href="#">Profile</a>
+    </nav>
+
+    <div class="user-chip">
+        <span id="username">Oisin Loftus</span>
+        <div class="avatar">OL</div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="card">
+        <div class="row">
+            <div>
+                <h1>Study Dashboard</h1>
+                <div class="muted" id="monthLabel">Month: —</div>
+            </div>
+            <div class="row" style="gap:10px;">
+                <span class="pill" id="totalMonth">This month: 0h</span>
+                <span class="pill" id="totalWeek">This week: 0h</span>
+                <span class="pill" id="totalToday">Today: 0h</span>
+            </div>
+        </div>
+        <div class="muted" style="margin-top:10px;">
+            Progress bars count <strong>completed</strong> sessions only. Cancelled sessions are still recorded in history.
+        </div>
+    </div>
+
+    <div class="card" id="subjectsCard">
+        <div class="row">
+            <div>
+                <div style="font-weight:900;">Monthly progress by subject</div>
+                <div class="muted">Targets are set in code for now (easy to make editable later).</div>
+            </div>
+        </div>
+        <div id="subjectBars"></div>
+    </div>
+
+    <div class="card">
+        <div class="row">
+            <div>
+                <div style="font-weight:900;">Recent sessions</div>
+                <div class="muted">Last 12 sessions across all subjects.</div>
+            </div>
+            <button id="clearAll" style="border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;">
+                Clear all data
+            </button>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Planned</th>
+                <th>Actual</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const SESSIONS_KEY = "atu_study_sessions_v1";
+
+    const SUBJECTS = [
+        { key:"oop", name:"OOP (Java)", targetHours: 25 },
+        { key:"analog", name:"Analog Devices", targetHours: 18 },
+        { key:"internet", name:"Internet Tech 2", targetHours: 14 },
+        { key:"iot", name:"IoT Project", targetHours: 30 },
+        { key:"maths", name:"Maths", targetHours: 16 },
+        { key:"other", name:"Other / Revision", targetHours: 10 },
+    ];
+
+    function loadSessions(){
+        const raw = localStorage.getItem(SESSIONS_KEY);
+        return raw ? JSON.parse(raw) : [];
+    }
+    function hours(min){ return (min||0)/60; }
+    function round1(x){ return Math.round(x*10)/10; }
+
+    function monthKey(d){
+        const dt = new Date(d);
+        return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}`;
+    }
+
+    function weekBounds(date=new Date()){
+        const d = new Date(date);
+        const day = (d.getDay() + 6) % 7;
+        const mon = new Date(d); mon.setDate(d.getDate()-day); mon.setHours(0,0,0,0);
+        const sun = new Date(mon); sun.setDate(mon.getDate()+6); sun.setHours(23,59,59,999);
+        return { mon, sun };
+    }
+
+    function sameDay(a,b){
+        const da = new Date(a).toISOString().slice(0,10);
+        const db = new Date(b).toISOString().slice(0,10);
+        return da === db;
+    }
+
+    function render(){
+        const sessions = loadSessions().slice().sort((a,b)=> new Date(b.endedAt) - new Date(a.endedAt));
+
+        const now = new Date();
+        const thisMonth = monthKey(now);
+        document.getElementById("monthLabel").textContent =
+            `Month: ${now.toLocaleDateString(undefined,{month:"long",year:"numeric"})}`;
+
+        const {mon, sun} = weekBounds(now);
+
+        const completed = sessions.filter(s => s.status === "COMPLETED");
+
+        const monthHours = completed
+            .filter(s => monthKey(s.endedAt) === thisMonth)
+            .reduce((sum,s)=> sum + hours(s.minutesActual), 0);
+
+        const weekHours = completed
+            .filter(s => {
+                const dt = new Date(s.endedAt);
+                return dt >= mon && dt <= sun;
+            })
+            .reduce((sum,s)=> sum + hours(s.minutesActual), 0);
+
+        const todayHours = completed
+            .filter(s => sameDay(s.endedAt, now))
+            .reduce((sum,s)=> sum + hours(s.minutesActual), 0);
+
+        document.getElementById("totalMonth").textContent = `This month: ${round1(monthHours)}h`;
+        document.getElementById("totalWeek").textContent = `This week: ${round1(weekHours)}h`;
+        document.getElementById("totalToday").textContent = `Today: ${round1(todayHours)}h`;
+
+        // Subject bars
+        const bars = document.getElementById("subjectBars");
+        bars.innerHTML = "";
+        for (const subj of SUBJECTS){
+            const done = completed
+                .filter(s => s.subjectKey === subj.key && monthKey(s.endedAt) === thisMonth)
+                .reduce((sum,s)=> sum + hours(s.minutesActual), 0);
+
+            const pct = subj.targetHours === 0 ? 0 : Math.min(100, Math.round((done / subj.targetHours) * 100));
+
+            const div = document.createElement("div");
+            div.className = "subject";
+            div.innerHTML = `
+        <div class="row">
+          <div style="font-weight:900;">${subj.name}</div>
+          <div class="pill">${round1(done)}h / ${subj.targetHours}h • ${pct}%</div>
+        </div>
+        <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+        <div class="muted" style="margin-top:8px;">
+          Completed sessions count toward this bar.
+        </div>
+      `;
+            bars.appendChild(div);
+        }
+
+        // Recent table
+        const tbody = document.getElementById("rows");
+        tbody.innerHTML = "";
+        const last = sessions.slice(0, 12);
+
+        if (last.length === 0){
+            tbody.innerHTML = `<tr><td colspan="5" class="muted" style="padding:14px;">No sessions yet. Use the Study Timer page to log one.</td></tr>`;
+            return;
+        }
+
+        for (const s of last){
+            const tr = document.createElement("tr");
+            const subjName = (SUBJECTS.find(x=>x.key===s.subjectKey)?.name) || s.subjectKey;
+
+            const statusPill = s.status === "COMPLETED"
+                ? `<span class="pill">COMPLETED</span>`
+                : `<span class="pill dangerPill">CANCELLED</span>`;
+
+            tr.innerHTML = `
+        <td>${new Date(s.endedAt).toLocaleString()}</td>
+        <td>${subjName}</td>
+        <td>${s.minutesPlanned} min</td>
+        <td>${s.minutesActual} min</td>
+        <td>${statusPill}</td>
+      `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    document.getElementById("clearAll").addEventListener("click", () => {
+        if (!confirm("Clear all study session data?")) return;
+        localStorage.removeItem(SESSIONS_KEY);
+        render();
+    });
+
+    render();
+</script>
+</body>
+</html>
