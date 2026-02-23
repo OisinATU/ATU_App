@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>ATU App • Stacker Session</title>
+    <style>
+        :root{
+            --atu-teal:#005b5e;
+            --atu-teal-2:#0c7c80;
+            --bg:#f6f8f9;
+            --card:#ffffff;
+            --text:#102027;
+            --muted:#6b7280;
+            --line:#e3e7ea;
+            --shadow: 0 12px 26px rgba(0,0,0,.08);
+        }
+        *{box-sizing:border-box}
+        body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg);}
+
+        .topbar{
+            background: var(--atu-teal);
+            color:#fff;
+            height: 86px;
+            display:flex;
+            align-items:center;
+            padding: 0 18px;
+            gap: 18px;
+            position: sticky;
+            top:0;
+            z-index:10;
+            box-shadow: 0 8px 18px rgba(0,0,0,.18);
+        }
+        .brand{display:flex;align-items:center;gap:12px;min-width:230px;}
+        .brand-badge{width:56px;height:44px;border-radius:10px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.5px;}
+        .brand-text small{display:block;opacity:.85;font-size:12px;line-height:1.1;}
+        .brand-text strong{display:block;font-size:14px;line-height:1.2;margin-top:2px;}
+        .nav{display:flex;gap:18px;align-items:center;font-weight:800;flex:1;}
+        .nav a{color:#fff;text-decoration:none;opacity:.92;padding:10px 10px;border-radius:999px;}
+        .nav a:hover{opacity:1;background:rgba(255,255,255,.10);}
+        .nav a.active{background:rgba(255,255,255,.14);}
+        .user-chip{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.12);font-weight:800;white-space:nowrap;}
+        .avatar{width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-weight:900;}
+
+        .wrap{max-width: 980px;margin:0 auto;padding:22px 18px 54px;}
+        .grid{display:grid;grid-template-columns: 380px 1fr;gap:16px;}
+        @media (max-width: 980px){ .grid{grid-template-columns: 1fr;} }
+
+        .card{
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
+        h1{margin:0 0 6px;}
+        .muted{color:var(--muted); font-size: 13px; line-height:1.35;}
+        .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;}
+
+        select, input[type="checkbox"]{ accent-color: var(--atu-teal-2); }
+        select{
+            padding: 12px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            outline:none;
+            font-weight: 800;
+            background:#fff;
+        }
+        .btn{
+            border:none;
+            cursor:pointer;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-weight: 900;
+            background: var(--atu-teal);
+            color: #fff;
+        }
+        .btn.secondary{ background:#fff; color: var(--text); border: 1px solid var(--line); }
+        .btn.danger{ background:#fff; color:#c23a3a; border: 1px solid rgba(194,58,58,.25); }
+        .btn:disabled{opacity:.6;cursor:not-allowed;}
+
+        .time{
+            font-size: 52px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin: 12px 0 6px;
+            text-align:center;
+            color: var(--atu-teal);
+        }
+        .centerNote{
+            text-align:center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .stackHeader{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-end;
+            gap: 12px;
+            flex-wrap:wrap;
+            margin-bottom: 10px;
+        }
+        .pill{
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(12,124,128,.10);
+            color: var(--atu-teal-2);
+            font-weight: 900;
+        }
+
+        .tileBox{
+            width: 100%;
+            max-width: 520px;
+            aspect-ratio: 1 / 1;
+            border-radius: 18px;
+            border: 2px dashed rgba(12,124,128,.30);
+            background: linear-gradient(0deg, rgba(12,124,128,.03), rgba(12,124,128,.03));
+            padding: 14px;
+            display:grid;
+            gap: 8px;
+            justify-content: stretch;
+            align-content: stretch;
+        }
+
+        .tile{
+            border-radius: 6px;
+            border: 1px solid rgba(16,24,40,.08);
+            background: #e9eef0;
+            transition: transform .12s ease, background .12s ease;
+            min-width: 0;
+            min-height: 0;
+        }
+        .tile.filled{
+            background: var(--atu-teal-2);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(0,0,0,.08);
+        }
+
+        .doneBanner{
+            display:none;
+            margin-top: 12px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(12,124,128,.22);
+            background: rgba(12,124,128,.08);
+            color: var(--atu-teal);
+            font-weight: 900;
+        }
+        .doneBanner.show{display:block;}
+    </style>
+</head>
+
+<body>
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-badge">ATU</div>
+        <div class="brand-text">
+            <small>Atlantic Technological University</small>
+            <strong>ATU App</strong>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <a class="active" href="stacker-session.html">Stacker</a>
+        <a href="#">Canteen</a>
+        <a href="#">Profile</a>
+    </nav>
+
+    <div class="user-chip">
+        <span id="username">Oisin Loftus</span>
+        <div class="avatar">OL</div>
+    </div>
+</header>
+
+<main class="wrap">
+    <div class="grid">
+        <!-- Left: controls -->
+        <section class="card">
+            <h1>Stacker Session</h1>
+            <div class="muted">
+                Pick a perfect-square session. You’ll get a square grid (N×N), filling <strong>1 tile per minute</strong>.
+            </div>
+
+            <div class="row">
+                <div style="font-weight:900;">Interval</div>
+                <select id="intervalSelect"></select>
+            </div>
+
+            <div class="row" style="gap:12px;">
+                <label style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;">
+                    <input type="checkbox" id="fastMode">
+                    Fast mode (fills 1 tile per second)
+                </label>
+            </div>
+
+            <div class="time" id="timeText">00:00</div>
+            <div class="centerNote" id="progressText">0 / 0 tiles filled</div>
+
+            <div class="row" style="justify-content:center;margin-top:14px;">
+                <button class="btn" id="startBtn">Start</button>
+                <button class="btn secondary" id="pauseBtn" disabled>Pause</button>
+                <button class="btn danger" id="cancelBtn" disabled>Cancel</button>
+                <button class="btn secondary" id="resetBtn">Reset</button>
+            </div>
+
+            <div class="doneBanner" id="doneBanner">Square completed ✅</div>
+        </section>
+
+        <!-- Right: square grid -->
+        <section class="card">
+            <div class="stackHeader">
+                <div>
+                    <div style="font-weight:900; font-size:18px;">Session Square</div>
+                    <div class="muted">A complete square = a completed session.</div>
+                </div>
+                <div class="pill" id="gridLabel">—</div>
+            </div>
+
+            <div class="tileBox" id="tileBox" aria-label="Minute tiles grid"></div>
+        </section>
+    </div>
+</main>
+
+<script>
+    // Perfect squares: minutes = n^2
+    const OPTIONS = [4, 9, 25, 36, 49, 64, 81, 100];
+
+    const intervalSelect = document.getElementById("intervalSelect");
+    const tileBox = document.getElementById("tileBox");
+    const gridLabel = document.getElementById("gridLabel");
+
+    const timeText = document.getElementById("timeText");
+    const progressText = document.getElementById("progressText");
+    const doneBanner = document.getElementById("doneBanner");
+
+    const startBtn = document.getElementById("startBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const fastMode = document.getElementById("fastMode");
+
+    let totalMinutes = 25;           // default
+    let gridN = 5;                   // sqrt(25)
+    let filled = 0;                  // tiles filled
+    let remainingSeconds = 25 * 60;  // countdown
+    let timer = null;
+    let running = false;
+    let paused = false;
+
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function renderTime(){
+        const m = Math.floor(remainingSeconds / 60);
+        const s = remainingSeconds % 60;
+        timeText.textContent = `${pad(m)}:${pad(s)}`;
+    }
+    function renderProgress(){
+        progressText.textContent = `${filled} / ${totalMinutes} tiles filled`;
+    }
+
+    function buildOptions(){
+        for (const min of OPTIONS){
+            const n = Math.sqrt(min);
+            const opt = document.createElement("option");
+            opt.value = String(min);
+            opt.textContent = `${n}×${n} (${min} min)`;
+            intervalSelect.appendChild(opt);
+        }
+        intervalSelect.value = "25";
+    }
+
+    function buildGrid(minutes){
+        totalMinutes = minutes;
+        gridN = Math.round(Math.sqrt(minutes));
+
+        gridLabel.textContent = `${gridN}×${gridN} • ${minutes} minutes`;
+        doneBanner.classList.remove("show");
+
+        // configure grid
+        tileBox.style.gridTemplateColumns = `repeat(${gridN}, 1fr)`;
+        tileBox.style.gridTemplateRows = `repeat(${gridN}, 1fr)`;
+
+        // reset tiles
+        tileBox.innerHTML = "";
+        for (let i=0; i<minutes; i++){
+            const t = document.createElement("div");
+            t.className = "tile";
+            tileBox.appendChild(t);
+        }
+
+        filled = 0;
+        remainingSeconds = minutes * 60;
+        renderTime();
+        renderProgress();
+    }
+
+    function setControls(state){
+        // idle | running | paused
+        if (state === "idle"){
+            startBtn.disabled = false;
+            pauseBtn.disabled = true;
+            cancelBtn.disabled = true;
+            pauseBtn.textContent = "Pause";
+        } else if (state === "running"){
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            cancelBtn.disabled = false;
+            pauseBtn.textContent = "Pause";
+        } else {
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
+            cancelBtn.disabled = false;
+            pauseBtn.textContent = "Resume";
+        }
+    }
+
+    // Fill exactly 1 new tile per "minute tick"
+    function fillOneTile(){
+        if (filled >= totalMinutes) return;
+        tileBox.children[filled].classList.add("filled");
+        filled += 1;
+        renderProgress();
+
+        if (filled === totalMinutes){
+            doneBanner.classList.add("show");
+        }
+    }
+
+    function tick(){
+        if (!running || paused) return;
+
+        // Decrease countdown each second regardless
+        remainingSeconds -= 1;
+        if (remainingSeconds < 0) remainingSeconds = 0;
+        renderTime();
+
+        // Decide when to fill a tile:
+        // - normal mode: each full minute boundary
+        // - fast mode: each second
+        if (fastMode.checked){
+            fillOneTile();
+        } else {
+            // Fill when we've just completed a minute of time.
+            // Example: from 30:00 down to 29:59 means minute 1 started, but not complete.
+            // We fill when remainingSeconds hits a multiple of 60 (i.e., 29:00, 28:00, ...).
+            if (remainingSeconds % 60 === 0){
+                fillOneTile();
+            }
+        }
+
+        // End condition
+        if (remainingSeconds === 0){
+            stopTimer(true);
+        }
+    }
+
+    function start(){
+        if (running) return;
+        running = true;
+        paused = false;
+        setControls("running");
+
+        // Use 1-second ticks for countdown; tile filling is controlled above
+        timer = setInterval(tick, 1000);
+    }
+
+    function togglePause(){
+        if (!running) return;
+        paused = !paused;
+        setControls(paused ? "paused" : "running");
+    }
+
+    function stopTimer(completed){
+        if (timer) clearInterval(timer);
+        timer = null;
+        running = false;
+        paused = false;
+        setControls("idle");
+
+        // On completion, ensure fully filled (normal mode can miss final fill edge-case)
+        if (completed){
+            while (filled < totalMinutes) fillOneTile();
+            doneBanner.classList.add("show");
+        }
+    }
+
+    function cancel(){
+        stopTimer(false);
+        // reset back to start state for same interval
+        buildGrid(totalMinutes);
+    }
+
+    function reset(){
+        if (running) cancel();
+        buildGrid(Number(intervalSelect.value));
+    }
+
+    intervalSelect.addEventListener("change", () => {
+        if (running){
+            alert("Finish or cancel the current session before changing interval.");
+            intervalSelect.value = String(totalMinutes);
+            return;
+        }
+        buildGrid(Number(intervalSelect.value));
+    });
+
+    startBtn.addEventListener("click", start);
+    pauseBtn.addEventListener("click", togglePause);
+    cancelBtn.addEventListener("click", cancel);
+    resetBtn.addEventListener("click", reset);
+
+    // init
+    buildOptions();
+    buildGrid(25);
+    setControls("idle");
+</script>
+</body>
+</html>
