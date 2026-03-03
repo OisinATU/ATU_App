@@ -1,17 +1,13 @@
 package ie.atu.java.atu_app.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
 
 import java.time.LocalDate;
 
-@Entity
+
 public class StudySession {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     private String studentId;
