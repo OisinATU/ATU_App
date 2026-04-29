@@ -1,24 +1,29 @@
 package ie.atu.java.atu_app.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 
 import java.time.LocalDate;
 
-
+@Entity
 public class StudySession {
 
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "studentId is required")
     private String studentId;
 
+    @Min(value = 1, message = "duration must be at least 1 minute")
     private int durationMinutes;
 
+    @NotNull(message = "date is required")
     private LocalDate date;
-
-
-
-
 
     // Getters and Setters
     public Long getId() {
