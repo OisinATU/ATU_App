@@ -19,6 +19,9 @@ public class StudySession {
     @NotBlank(message = "studentId is required")
     private String studentId;
 
+    @NotBlank(message = "subject is required")
+    private String subject;
+
     @Min(value = 1, message = "duration must be at least 1 minute")
     private int durationMinutes;
 
@@ -58,5 +61,11 @@ public class StudySession {
         this.date = date;
     }
 
+    public String getSubject() {
+        return subject;
+    }
 
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 }

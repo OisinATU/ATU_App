@@ -26,9 +26,9 @@ public class StudyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    // GET /api/study/totals
-    @GetMapping("/totals")
-    public ResponseEntity<List<StudySession>> getTotals() {
-        return ResponseEntity.ok(studyService.getTotals());
+    @GetMapping("/sessions")
+    public ResponseEntity<List<StudySession>> getAllSessions() {
+        return ResponseEntity.ok(studyService.getAllSessions());
     }
+
 }
