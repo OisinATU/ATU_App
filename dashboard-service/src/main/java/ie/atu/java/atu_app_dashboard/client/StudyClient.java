@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(name = "study-service", url = "http://localhost:8080/api/study")
+@FeignClient(name = "study-service", url = "http://localhost:8080/atu_app/study")
 public interface StudyClient {
 
     @GetMapping("/sessions")

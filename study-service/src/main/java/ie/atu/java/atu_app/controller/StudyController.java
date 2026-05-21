@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/study")
+@RequestMapping("/atu_app/study")
 public class StudyController {
 
     private final StudyService studyService;
@@ -29,6 +29,18 @@ public class StudyController {
     @GetMapping("/sessions")
     public ResponseEntity<List<StudySession>> getAllSessions() {
         return ResponseEntity.ok(studyService.getAllSessions());
+    }
+
+    @GetMapping("/sessions/{id}")
+    public ResponseEntity<StudySession> getSessionById(@PathVariable Long id) {
+        StudySession session = studyService.getSessionById(id);
+        return ResponseEntity.ok(session);
+    }
+
+    @DeleteMapping("/sessions/{id}")
+    public ResponseEntity<String> deleteSession(@PathVariable Long id) {
+        studyService.deleteSession(id);
+        return ResponseEntity.ok("Study session deleted");
     }
 
 }
